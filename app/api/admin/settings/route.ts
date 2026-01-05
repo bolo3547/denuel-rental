@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma';
 import { requireAuth } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 // GET - Fetch system settings (public for reading colors/branding)
 export async function GET() {

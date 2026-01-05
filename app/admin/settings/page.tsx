@@ -220,7 +220,7 @@ export default function AdminSettingsPage() {
     
     try {
       const res = await csrfFetch('/api/admin/settings', {
-        method: 'PUT',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify(settings),

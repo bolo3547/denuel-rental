@@ -1,17 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { verifyAuth } from '@/lib/auth';
+import { requireAuth } from '@/lib/auth';
 
 export async function GET(req: NextRequest) {
   try {
-    const payload = await verifyAuth(req);
-    if (!payload || payload.role !== 'DRIVER') {
+    const user = await requireAuth(req);
+    if (!user || user.role !== 'DRIVER') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Get driver profile
-    const driver = await prisma.driver.findUnique({
-      where: { userId: payload.userId },
+    const driver = await prisma.driverProfile.findUnique({
+      where: { userId: user.id },
       include: {
         user: {
           select: {

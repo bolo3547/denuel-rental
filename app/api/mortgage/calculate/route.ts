@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireAuth, getUser } from '@/lib/auth';
+import { requireAuth } from '@/lib/auth';
 
 interface MortgageInput {
   homePrice: number;

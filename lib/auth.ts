@@ -58,6 +58,25 @@ export function requireRole(user: any, roles: string[] = []) {
   return roles.includes(user.role);
 }
 
+// Soft auth - returns user if logged in, null otherwise (no throw)
+export async function getUser(req: Request) {
+  try {
+    const cookie = req.headers.get('cookie') || '';
+    const match = cookie.match(/denuel_token=([^;]+)/);
+    if (!match) return null;
+    const token = match[1];
+    const decoded = verifyJwt<{ id: string; role: string }>(token);
+    if (!decoded) return null;
+    const user = await prisma.user.findUnique({ where: { id: decoded.id } });
+    if (!user) return null;
+    // @ts-ignore
+    delete user.password;
+    return user;
+  } catch (e) {
+    return null;
+  }
+}
+
 export async function requireAuth(req: Request, roles: string[] = []) {
   const cookie = req.headers.get('cookie') || '';
   const match = cookie.match(/denuel_token=([^;]+)/);

@@ -17,9 +17,9 @@ export async function POST(
 
     // Try to find and update driver first
     try {
-      const driver = await prisma.driver.findUnique({ where: { id } });
+      const driver = await prisma.driverProfile.findUnique({ where: { id } });
       if (driver) {
-        await prisma.driver.update({
+        await prisma.driverProfile.update({
           where: { id },
           data: {
             status: 'APPROVED',

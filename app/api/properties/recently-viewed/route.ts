@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireAuth, getUser } from '@/lib/auth';
+import { requireAuth } from '@/lib/auth';
 
 // GET - Get user's recently viewed properties
 export async function GET(req: NextRequest) {
   try {
-    const user = await getUser(req);
+    const user = await requireAuth(req);
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }

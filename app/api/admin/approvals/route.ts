@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
     // Fetch drivers if type is 'all' or 'driver'
     if (!type || type === 'all' || type === 'driver') {
       try {
-        const drivers = await prisma.driver.findMany({
+        const drivers = await prisma.driverProfile.findMany({
           where: driverFilter,
           include: {
             user: {

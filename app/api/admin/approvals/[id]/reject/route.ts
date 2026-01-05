@@ -38,8 +38,10 @@ export async function POST(
             data: {
               userId: driver.userId,
               type: 'APPLICATION_REJECTED',
-              title: 'Application Update',
-              message: `Your driver application was not approved. Reason: ${reason}. You may reapply after addressing the issues.`,
+              data: {
+                title: 'Application Update',
+                message: `Your driver application was not approved. Reason: ${reason}. You may reapply after addressing the issues.`,
+              },
             },
           });
         } catch (e) {
@@ -72,8 +74,10 @@ export async function POST(
               data: {
                 userId: provider.userId,
                 type: 'APPLICATION_REJECTED',
-                title: 'Application Update',
-                message: `Your service provider application for ${provider.businessName} was not approved. Reason: ${reason}. You may reapply after addressing the issues.`,
+                data: {
+                  title: 'Application Update',
+                  message: `Your service provider application for ${provider.businessName} was not approved. Reason: ${reason}. You may reapply after addressing the issues.`,
+                },
               },
             });
           }

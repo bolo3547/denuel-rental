@@ -136,8 +136,10 @@ export async function POST(request: NextRequest) {
           data: {
             userId: admin.id,
             type: 'NEW_APPLICATION',
-            title: 'New Service Provider Application',
-            message: `${fullName} has applied to become a ${serviceType}. Review their application.`,
+            data: {
+              title: 'New Service Provider Application',
+              message: `${fullName} has applied to become a ${serviceType}. Review their application.`,
+            },
           },
         });
       }

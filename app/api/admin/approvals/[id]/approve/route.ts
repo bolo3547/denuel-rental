@@ -32,8 +32,10 @@ export async function POST(
             data: {
               userId: driver.userId,
               type: 'APPLICATION_APPROVED',
-              title: 'Application Approved!',
-              message: 'Congratulations! Your driver application has been approved. You can now start accepting ride requests.',
+              data: {
+                title: 'Application Approved!',
+                message: 'Congratulations! Your driver application has been approved. You can now start accepting ride requests.',
+              },
             },
           });
         } catch (e) {
@@ -65,8 +67,10 @@ export async function POST(
               data: {
                 userId: provider.userId,
                 type: 'APPLICATION_APPROVED',
-                title: 'Application Approved!',
-                message: `Congratulations! Your service provider application for ${provider.businessName} has been approved. You can now start receiving job requests.`,
+                data: {
+                  title: 'Application Approved!',
+                  message: `Congratulations! Your service provider application for ${provider.businessName} has been approved. You can now start receiving job requests.`,
+                },
               },
             });
           }

@@ -27,7 +27,6 @@ export async function POST(
           data: {
             isVerified: true,
             verifiedAt: new Date(),
-            verifiedBy: user.id,
           },
         });
 

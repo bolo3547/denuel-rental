@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
             title: true,
           },
         },
-        user: {
+        tenant: {
           select: {
             name: true,
           },
@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
       return {
         id: booking.id,
         propertyTitle: booking.property.title,
-        tenantName: booking.user.name || "Anonymous",
+        tenantName: booking.tenant.name || "Anonymous",
         amount: booking.amountZmw,
         commission: Math.round(commission),
         date: booking.createdAt,

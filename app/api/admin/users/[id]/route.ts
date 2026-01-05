@@ -17,8 +17,8 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
         role: true,
         createdAt: true,
         updatedAt: true,
-        isVerified: true,
-        image: true,
+        isIdVerified: true,
+        profileImage: true,
         _count: {
           select: {
             properties: true,

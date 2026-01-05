@@ -160,6 +160,7 @@ model User {
   phone     String?
   password  String
   role      UserRole  @default(USER)
+  profileImage String?
   isSuspended Boolean @default(false)
   notifyEmail Boolean @default(true)
   notifyWhatsApp Boolean @default(false)
@@ -230,6 +231,7 @@ model User {
   reviewsReceived     UserReview[] @relation("ReviewsReceived")
   reviewsGiven        UserReview[] @relation("ReviewsGiven")
   testimonials        Testimonial[]
+  verifiedDocuments   ServiceDocument[] @relation("DocumentVerifier")
 }
 
 model Property {
@@ -959,6 +961,7 @@ model ServiceProvider {
   isVerified      Boolean         @default(false)
   isActive        Boolean         @default(true)
   isAvailable     Boolean         @default(true)
+  rejectionReason String?         @db.Text
   ratingAvg       Float           @default(0)
   ratingCount     Int             @default(0)
   completedJobs   Int             @default(0)
@@ -1018,6 +1021,8 @@ model ServiceDocument {
   mimeType        String?
   isVerified      Boolean         @default(false)
   verifiedAt      DateTime?
+  verifiedBy      User?           @relation("DocumentVerifier", fields: [verifiedById], references: [id])
+  verifiedById    String?
   expiresAt       DateTime?
   uploadedAt      DateTime        @default(now())
 }

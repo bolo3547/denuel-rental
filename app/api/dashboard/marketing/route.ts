@@ -17,6 +17,7 @@ export async function GET(req: NextRequest) {
           select: {
             favorites: true,
             inquiries: true,
+            views: true,
           },
         },
       },
@@ -24,7 +25,7 @@ export async function GET(req: NextRequest) {
 
     // Calculate performance metrics for each property
     const propertyPerformance = properties.map((property) => {
-      const views = property.views || 0;
+      const views = property._count.views;
       const inquiries = property._count.inquiries;
       const favorites = property._count.favorites;
       const conversionRate = views > 0 ? (inquiries / views) * 100 : 0;
@@ -40,7 +41,7 @@ export async function GET(req: NextRequest) {
     });
 
     // Calculate overall stats
-    const totalViews = properties.reduce((sum, p) => sum + (p.views || 0), 0);
+    const totalViews = properties.reduce((sum, p) => sum + p._count.views, 0);
     const totalInquiries = propertyPerformance.reduce(
       (sum, p) => sum + p.inquiries,
       0

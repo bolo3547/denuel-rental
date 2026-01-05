@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
           select: {
             name: true,
             email: true,
-            image: true,
+            profileImage: true,
           },
         },
       },
@@ -32,101 +32,95 @@ export async function GET(req: NextRequest) {
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const weekStart = new Date(todayStart);
     weekStart.setDate(weekStart.getDate() - 7);
-    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
-    // Get trip counts
+    // Get trip counts using correct field name: assignedDriverId
     const [
       totalTrips,
       todayTrips,
       weekTrips,
       completedTrips,
-      cancelledTrips,
+      canceledTrips,
     ] = await Promise.all([
       prisma.transportRequest.count({
-        where: { driverId: driver.id },
+        where: { assignedDriverId: driver.id },
       }),
       prisma.transportRequest.count({
         where: {
-          driverId: driver.id,
+          assignedDriverId: driver.id,
           createdAt: { gte: todayStart },
         },
       }),
       prisma.transportRequest.count({
         where: {
-          driverId: driver.id,
+          assignedDriverId: driver.id,
           createdAt: { gte: weekStart },
         },
       }),
       prisma.transportRequest.count({
         where: {
-          driverId: driver.id,
+          assignedDriverId: driver.id,
           status: 'COMPLETED',
         },
       }),
       prisma.transportRequest.count({
         where: {
-          driverId: driver.id,
-          status: 'CANCELLED',
+          assignedDriverId: driver.id,
+          status: 'CANCELED',
         },
       }),
     ]);
 
-    // Get earnings
-    const earnings = await prisma.transportRequest.aggregate({
+    // Get earnings from DriverEarning table
+    const earnings = await prisma.driverEarning.aggregate({
       where: {
         driverId: driver.id,
-        status: 'COMPLETED',
       },
       _sum: {
-        fare: true,
+        netZmw: true,
       },
     });
 
-    const todayEarnings = await prisma.transportRequest.aggregate({
+    const todayEarnings = await prisma.driverEarning.aggregate({
       where: {
         driverId: driver.id,
-        status: 'COMPLETED',
-        completedAt: { gte: todayStart },
+        createdAt: { gte: todayStart },
       },
       _sum: {
-        fare: true,
+        netZmw: true,
       },
     });
 
-    const weekEarnings = await prisma.transportRequest.aggregate({
+    const weekEarnings = await prisma.driverEarning.aggregate({
       where: {
         driverId: driver.id,
-        status: 'COMPLETED',
-        completedAt: { gte: weekStart },
+        createdAt: { gte: weekStart },
       },
       _sum: {
-        fare: true,
+        netZmw: true,
       },
     });
 
-    // Get average rating
-    const ratings = await prisma.transportRating.aggregate({
+    // Get average rating from Rating table
+    const ratings = await prisma.rating.aggregate({
       where: {
-        transportRequest: {
-          driverId: driver.id,
-        },
+        driverId: driver.id,
       },
       _avg: {
-        rating: true,
+        stars: true,
       },
       _count: {
-        rating: true,
+        stars: true,
       },
     });
 
-    // Calculate acceptance rate (accepted / total assigned)
+    // Calculate acceptance rate
     const totalAssigned = await prisma.transportRequest.count({
-      where: { driverId: driver.id },
+      where: { assignedDriverId: driver.id },
     });
     const accepted = await prisma.transportRequest.count({
       where: {
-        driverId: driver.id,
-        status: { in: ['ACCEPTED', 'PICKED_UP', 'IN_PROGRESS', 'COMPLETED'] },
+        assignedDriverId: driver.id,
+        status: { in: ['DRIVER_ASSIGNED', 'DRIVER_ARRIVING', 'IN_PROGRESS', 'COMPLETED'] },
       },
     });
     const acceptanceRate = totalAssigned > 0 ? (accepted / totalAssigned) * 100 : 100;
@@ -139,25 +133,23 @@ export async function GET(req: NextRequest) {
         id: driver.id,
         name: driver.user.name,
         email: driver.user.email,
-        image: driver.user.image,
+        image: driver.user.profileImage,
         vehicleType: driver.vehicleType,
-        vehicleModel: driver.vehicleModel,
         vehiclePlate: driver.vehiclePlate,
-        vehicleColor: driver.vehicleColor,
-        isAvailable: driver.isAvailable,
-        isVerified: driver.isVerified,
+        isOnline: driver.isOnline,
+        isApproved: driver.isApproved,
       },
       stats: {
         totalTrips,
         todayTrips,
         weekTrips,
         completedTrips,
-        cancelledTrips,
-        totalEarnings: earnings._sum.fare || 0,
-        todayEarnings: todayEarnings._sum.fare || 0,
-        weekEarnings: weekEarnings._sum.fare || 0,
-        averageRating: ratings._avg.rating || 0,
-        totalRatings: ratings._count.rating || 0,
+        canceledTrips,
+        totalEarnings: earnings._sum.netZmw || 0,
+        todayEarnings: todayEarnings._sum.netZmw || 0,
+        weekEarnings: weekEarnings._sum.netZmw || 0,
+        averageRating: ratings._avg.stars || 0,
+        totalRatings: ratings._count.stars || 0,
         acceptanceRate: Math.round(acceptanceRate),
         completionRate: Math.round(completionRate),
       },

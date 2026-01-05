@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { csrfFetch } from "@/lib/csrf";
 import { VerificationBadge, TrustScoreBar } from "@/components/VerificationBadge";
 import Link from "next/link";

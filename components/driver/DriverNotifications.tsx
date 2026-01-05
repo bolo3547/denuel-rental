@@ -47,7 +47,7 @@ export default function DriverNotifications({ enabled = true, onNewRequest }: Pr
 
     // Show browser notification
     if (hasPermission.current && 'Notification' in window) {
-      const notificationOptions: NotificationOptions & { vibrate?: number[] } = {
+      const notificationOptions: globalThis.NotificationOptions & { vibrate?: number[] } = {
         body,
         icon: '/icon-192x192.png',
         badge: '/icon-192x192.png',

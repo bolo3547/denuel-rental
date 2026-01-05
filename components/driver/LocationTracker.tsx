@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect, useRef, useCallback } from 'react';
 
+/* eslint-disable no-undef */
+
 interface LocationState {
   latitude: number;
   longitude: number;

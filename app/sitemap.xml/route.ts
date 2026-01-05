@@ -1,6 +1,8 @@
 import prisma from '../../lib/prisma';
 import { NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   const properties = await prisma.property.findMany({ take: 100 });
   const base = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';

@@ -6,6 +6,7 @@ import SearchBar from '../components/SearchBar';
 import ListingsGrid from '../components/ListingsGrid';
 import ListingCard from '../components/ListingCard';
 import MapSplitView from '../components/MapSplitView';
+import RetryButton from '../components/RetryButton';
 import prisma from '../lib/prisma';
 
 export const metadata: Metadata = {
@@ -238,12 +239,7 @@ export default async function Home() {
                   <div>
                     <h3 className="font-semibold text-red-900 mb-1">Unable to Load Properties</h3>
                     <p className="text-red-700 text-sm mb-4">{error}</p>
-                    <button
-                      onClick={() => window.location.reload()}
-                      className="text-sm bg-red-100 hover:bg-red-200 text-red-800 px-4 py-2 rounded-lg font-medium transition"
-                    >
-                      Try Again
-                    </button>
+                    <RetryButton />
                   </div>
                 </div>
               </div>

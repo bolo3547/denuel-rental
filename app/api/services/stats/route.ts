@@ -30,8 +30,8 @@ export async function GET(req: Request) {
     const pendingBookings = allBookings.filter(b => b.status === 'PENDING').length;
     const completedBookings = allBookings.filter(b => b.status === 'COMPLETED');
     
-    // Calculate earnings (from completed bookings with agreedPrice)
-    const totalEarnings = completedBookings.reduce((sum, b) => sum + (b.agreedPrice || 0), 0);
+    // Calculate earnings (from completed bookings with finalPrice)
+    const totalEarnings = completedBookings.reduce((sum, b) => sum + (b.finalPrice || 0), 0);
     
     // This month's earnings
     const startOfMonth = new Date();
@@ -40,7 +40,7 @@ export async function GET(req: Request) {
     
     const thisMonthEarnings = completedBookings
       .filter(b => new Date(b.createdAt) >= startOfMonth)
-      .reduce((sum, b) => sum + (b.agreedPrice || 0), 0);
+      .reduce((sum, b) => sum + (b.finalPrice || 0), 0);
 
     return NextResponse.json({
       totalBookings: allBookings.length,

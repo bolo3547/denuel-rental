@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/components/Header';
@@ -151,7 +151,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   OTHER: 'Other Services',
 };
 
-export default function ServiceProviderDashboard() {
+function ServiceProviderDashboardContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [provider, setProvider] = useState<ServiceProvider | null>(null);
@@ -1010,5 +1010,13 @@ export default function ServiceProviderDashboard() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function ServiceProviderDashboard() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <ServiceProviderDashboardContent />
+    </Suspense>
   );
 }

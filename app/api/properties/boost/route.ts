@@ -5,7 +5,7 @@ import { requireAuth } from '../../../../lib/auth';
 // POST /api/properties/boost - Boost a property listing
 export async function POST(req: Request) {
   try {
-    const { user } = await requireAuth(req);
+    const user = await requireAuth(req);
     const body = await req.json();
     
     const { propertyId, boostType, days = 7 } = body;
@@ -99,7 +99,7 @@ export async function POST(req: Request) {
 // GET /api/properties/boost - Get active boosts for user's properties
 export async function GET(req: Request) {
   try {
-    const { user } = await requireAuth(req);
+    const user = await requireAuth(req);
     
     const boosts = await prisma.propertyBoost.findMany({
       where: {

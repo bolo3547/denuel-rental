@@ -5,7 +5,7 @@ import { requireAuth } from '../../../../lib/auth';
 // GET /api/admin/revenue - Get revenue analytics
 export async function GET(req: Request) {
   try {
-    const { user } = await requireAuth(req, ['ADMIN']);
+    const user = await requireAuth(req, ['ADMIN']);
 
     const url = new URL(req.url);
     const period = url.searchParams.get('period') || '30'; // days

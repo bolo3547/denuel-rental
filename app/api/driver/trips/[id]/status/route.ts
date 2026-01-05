@@ -37,21 +37,18 @@ export async function POST(req: Request, { params }: { params: { id: string } })
     await prisma.transaction.create({ data: {
       userId: updated.tenantId,
       type: 'TRIP_PAYMENT',
-      referenceId: updated.id,
-      amountZmw: gross,
-      feeZmw: 0,
-      netZmw: gross,
-      metadata: { driverId: profile.userId }
+      amount: gross,
+      description: `Trip payment for transport request ${updated.id}`,
+      metadata: { driverId: profile.userId, transportRequestId: updated.id }
     }});
 
     await prisma.transaction.create({ data: {
-      userId: null,
+      userId: updated.tenantId, // Charge to the tenant, commission goes to platform
       type: 'PLATFORM_COMMISSION',
-      referenceId: updated.id,
-      amountZmw: platformFee,
-      feeZmw: 0,
-      netZmw: platformFee,
-      metadata: { driverId: profile.userId }
+      amount: platformFee,
+      commission: platformFee,
+      description: `Platform commission for transport request ${updated.id}`,
+      metadata: { driverId: profile.userId, transportRequestId: updated.id }
     }});
   }
 

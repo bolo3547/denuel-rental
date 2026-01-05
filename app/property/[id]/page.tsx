@@ -116,7 +116,6 @@ export default async function PropertyPage({ params }: { params: { id: string } 
                     <img src={plan.imageUrl} alt={plan.name || 'Floor Plan'} className="w-full h-40 object-cover rounded" />
                     <div className="mt-2 text-sm">
                       <div className="font-medium">{plan.name}</div>
-                      {plan.sqft && <div className="text-gray-500">{plan.sqft} sq ft</div>}
                     </div>
                   </div>
                 ))}
@@ -187,7 +186,7 @@ export default async function PropertyPage({ params }: { params: { id: string } 
                           hour: 'numeric', minute: '2-digit' 
                         })}
                       </div>
-                      {oh.virtualOption && (
+                      {oh.isVirtual && (
                         <span className="text-xs text-blue-600">Virtual option available</span>
                       )}
                     </div>
@@ -212,7 +211,7 @@ export default async function PropertyPage({ params }: { params: { id: string } 
 
             <div className="flex flex-col gap-2">
               <FavoriteButton propertyId={prop.id} />
-              <PriceAlertButton propertyId={prop.id} currentPrice={prop.price} />
+              <PriceAlertButton propertyId={prop.id} currentPrice={prop.price} propertyTitle={prop.title} />
               {whatsapp && (
                 <a href={whatsapp} target="_blank" rel="noreferrer" className="p-2 rounded border text-center hover:bg-gray-50 dark:hover:bg-gray-700">
                   💬 Chat on WhatsApp
@@ -231,7 +230,7 @@ export default async function PropertyPage({ params }: { params: { id: string } 
           {prop.viewingSlots && prop.viewingSlots.length > 0 && (
             <div className="bg-white dark:bg-gray-800 rounded p-4 shadow">
               <h3 className="font-semibold mb-3">📅 Schedule a Tour</h3>
-              <ViewingScheduler propertyId={prop.id} />
+              <ViewingScheduler propertyId={prop.id} propertyTitle={prop.title} />
             </div>
           )}
 

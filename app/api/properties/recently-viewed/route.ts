@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireAuth } from '@/lib/auth';
+import { requireAuth, getUser } from '@/lib/auth';
 
 // GET - Get user's recently viewed properties
 export async function GET(req: NextRequest) {

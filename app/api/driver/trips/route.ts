@@ -39,11 +39,6 @@ export async function GET(req: NextRequest) {
             phone: true,
           },
         },
-        Rating: {
-          select: {
-            rating: true,
-          },
-        },
       },
     });
 
@@ -59,10 +54,10 @@ export async function GET(req: NextRequest) {
       createdAt: trip.createdAt.toISOString(),
       completedAt: undefined,
       tenant: {
-        name: trip.tenant.name || 'Customer',
-        phone: trip.tenant.phone,
+        name: trip.tenant?.name || 'Customer',
+        phone: trip.tenant?.phone,
       },
-      rating: trip.Rating?.rating,
+      rating: undefined, // Rating fetched separately if needed
     }));
 
     return NextResponse.json({ trips: formattedTrips });

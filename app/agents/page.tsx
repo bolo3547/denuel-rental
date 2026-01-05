@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/components/Header';
@@ -81,7 +81,7 @@ const SORT_OPTIONS = [
   { value: 'experience', label: 'Most Experience' },
 ];
 
-export default function AgentsPage() {
+function AgentsPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -632,5 +632,13 @@ export default function AgentsPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AgentsPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <AgentsPageContent />
+    </Suspense>
   );
 }

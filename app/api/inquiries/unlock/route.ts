@@ -5,7 +5,7 @@ import { requireAuth } from '../../../../lib/auth';
 // POST /api/inquiries/unlock - Unlock inquiry contact details
 export async function POST(req: Request) {
   try {
-    const { user } = await requireAuth(req);
+    const user = await requireAuth(req);
     const body = await req.json();
     
     const { inquiryId } = body;

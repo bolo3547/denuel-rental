@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireAuth } from '@/lib/auth';
+import { requireAuth, getUser } from '@/lib/auth';
 
 interface MortgageInput {
   homePrice: number;
@@ -169,7 +169,7 @@ export async function POST(req: NextRequest) {
             hoaFees: result.hoaFees,
             pmi: result.pmi,
             totalPayment: result.totalCost,
-            amortization: result.amortization,
+            amortization: result.amortization as unknown as object[],
           },
         });
       }

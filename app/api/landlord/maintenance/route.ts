@@ -215,13 +215,13 @@ export async function PUT(req: NextRequest) {
 
     // Add note to history
     if (note) {
-      const notes = (request.notes as Array<{ note: string; by: string; at: Date }>) || [];
+      const notes = ((request.notes as unknown) as Array<{ note: string; by: string; at: Date }>) || [];
       notes.push({
         note,
         by: user.name || user.email,
         at: new Date(),
       });
-      updateData.notes = notes;
+      updateData.notes = notes as unknown as object;
     }
 
     const updated = await prisma.maintenanceRequest.update({

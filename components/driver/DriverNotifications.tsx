@@ -47,14 +47,20 @@ export default function DriverNotifications({ enabled = true, onNewRequest }: Pr
 
     // Show browser notification
     if (hasPermission.current && 'Notification' in window) {
-      const notification = new Notification(title, {
+      const notificationOptions: NotificationOptions & { vibrate?: number[] } = {
         body,
         icon: '/icon-192x192.png',
         badge: '/icon-192x192.png',
-        vibrate: [200, 100, 200],
         tag: 'driver-request',
         requireInteraction: true,
-      });
+      };
+      
+      // Vibrate is supported in some browsers
+      if ('vibrate' in navigator) {
+        (notificationOptions as any).vibrate = [200, 100, 200];
+      }
+      
+      const notification = new Notification(title, notificationOptions);
 
       notification.onclick = () => {
         window.focus();

@@ -5,7 +5,7 @@ import { requireAuth } from '../../../lib/auth';
 // GET /api/subscriptions - Get user's subscription
 export async function GET(req: Request) {
   try {
-    const { user } = await requireAuth(req);
+    const user = await requireAuth(req);
     
     const subscription = await prisma.userSubscription.findUnique({
       where: { userId: user.id },
@@ -21,7 +21,7 @@ export async function GET(req: Request) {
 // POST /api/subscriptions - Subscribe to a plan
 export async function POST(req: Request) {
   try {
-    const { user } = await requireAuth(req);
+    const user = await requireAuth(req);
     const body = await req.json();
     
     const { planId } = body;
@@ -151,7 +151,7 @@ export async function POST(req: Request) {
 // DELETE /api/subscriptions - Cancel subscription
 export async function DELETE(req: Request) {
   try {
-    const { user } = await requireAuth(req);
+    const user = await requireAuth(req);
     
     const subscription = await prisma.userSubscription.update({
       where: { userId: user.id },

@@ -457,20 +457,8 @@ export default function ServicesMarketplace({
                   {reviews.map((review) => (
                     <div key={review.id} className="border-b pb-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gray-100 overflow-hidden">
-                          {review.reviewer.image ? (
-                            <Image
-                              src={review.reviewer.image}
-                              alt={review.reviewer.name}
-                              width={40}
-                              height={40}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center text-gray-400">
-                              {review.reviewer.name.charAt(0)}
-                            </div>
-                          )}
+                        <div className="w-10 h-10 rounded-full bg-gray-100 overflow-hidden flex items-center justify-center text-gray-400">
+                          {review.reviewer.name.charAt(0)}
                         </div>
                         <div>
                           <p className="font-medium text-gray-900">{review.reviewer.name}</p>
@@ -482,7 +470,7 @@ export default function ServicesMarketplace({
                           </div>
                         </div>
                       </div>
-                      <p className="mt-2 text-gray-600">{review.content}</p>
+                      <p className="mt-2 text-gray-600">{review.review}</p>
                     </div>
                   ))}
                   {reviews.length === 0 && (

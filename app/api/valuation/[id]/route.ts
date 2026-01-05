@@ -257,8 +257,8 @@ export async function GET(
         lowEstimate: valuation.lowEstimate,
         highEstimate: valuation.highEstimate,
         confidenceScore: valuation.confidenceScore,
-        comparables: valuation.comparables,
-        factors: valuation.factors,
+        comparables: valuation.comparables as unknown as object[],
+        factors: valuation.factors as unknown as object,
       },
     });
 
@@ -292,8 +292,8 @@ export async function POST(
         lowEstimate: valuation.lowEstimate,
         highEstimate: valuation.highEstimate,
         confidenceScore: valuation.confidenceScore,
-        comparables: valuation.comparables,
-        factors: valuation.factors,
+        comparables: valuation.comparables as unknown as object[],
+        factors: valuation.factors as unknown as object,
       },
     });
 

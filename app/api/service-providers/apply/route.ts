@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '../../../../lib/prisma';
 import { requireAuth } from '../../../../lib/auth';
+import { ServiceCategory } from '@prisma/client';
 
 // POST /api/service-providers/apply - Submit service provider application
 export async function POST(request: NextRequest) {
@@ -60,7 +61,7 @@ export async function POST(request: NextRequest) {
       other: 'OTHER',
     };
 
-    const category = categoryMap[serviceType] || 'OTHER';
+    const category = (categoryMap[serviceType] || 'OTHER') as ServiceCategory;
 
     // Create or get user if not logged in
     let userId = user?.id;

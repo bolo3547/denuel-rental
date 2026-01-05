@@ -5,7 +5,7 @@ import { requireAuth } from '../../../lib/auth';
 // GET /api/payments - Get user's payment history
 export async function GET(req: Request) {
   try {
-    const { user } = await requireAuth(req);
+    const user = await requireAuth(req);
     
     const payments = await prisma.payment.findMany({
       where: { userId: user.id },
@@ -22,7 +22,7 @@ export async function GET(req: Request) {
 // POST /api/payments - Initiate a payment
 export async function POST(req: Request) {
   try {
-    const { user } = await requireAuth(req);
+    const user = await requireAuth(req);
     const body = await req.json();
     
     const { amount, paymentMethod, phoneNumber, description, metadata } = body;

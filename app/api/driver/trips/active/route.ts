@@ -33,7 +33,7 @@ export async function GET(req: Request) {
         property: {
           select: {
             title: true,
-            address: true
+            addressText: true
           }
         }
       },

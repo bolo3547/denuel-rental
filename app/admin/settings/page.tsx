@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useSettings } from '@/lib/SettingsContext';
+import { csrfFetch } from '@/lib/csrf';
 
 // Helper function to safely extract error message from any error type
 function getErrorMessage(error: unknown, fallback: string = 'An error occurred'): string {
@@ -218,7 +219,7 @@ export default function AdminSettingsPage() {
     setMessage(null);
     
     try {
-      const res = await fetch('/api/admin/settings', {
+      const res = await csrfFetch('/api/admin/settings', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

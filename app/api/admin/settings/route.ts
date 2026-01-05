@@ -27,6 +27,15 @@ export async function GET() {
 
 // PUT - Update system settings (admin only)
 export async function PUT(req: Request) {
+  return handleUpdate(req);
+}
+
+// POST - Alternative method for updating (some clients prefer POST)
+export async function POST(req: Request) {
+  return handleUpdate(req);
+}
+
+async function handleUpdate(req: Request) {
   try {
     let user;
     try {

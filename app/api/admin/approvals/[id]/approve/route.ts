@@ -22,8 +22,7 @@ export async function POST(
         await prisma.driverProfile.update({
           where: { id },
           data: {
-            status: 'APPROVED',
-            isVerified: true,
+            isApproved: true,
           },
         });
 

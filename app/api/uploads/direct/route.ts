@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth } from '../../../../lib/auth';
-import { writeFile, mkdir } from 'fs/promises';
-import path from 'path';
+import { put } from '@vercel/blob';
+
+export const runtime = 'nodejs';
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,27 +15,33 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
-    // Ensure uploads directory exists
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads', user.id);
-    await mkdir(uploadDir, { recursive: true });
+    // Check if Vercel Blob is configured
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      console.error('BLOB_READ_WRITE_TOKEN is not configured');
+      return NextResponse.json(
+        { error: 'File storage is not configured. Please contact support.' },
+        { status: 500 }
+      );
+    }
 
-    // Save file
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    // Generate a unique filename
     const filename = key.split('/').pop() || `${Date.now()}-${file.name}`;
-    const filepath = path.join(uploadDir, filename);
-    
-    await writeFile(filepath, buffer);
+    const pathname = `uploads/${user.id}/${filename}`;
 
-    const publicUrl = `/uploads/${user.id}/${filename}`;
+    // Upload to Vercel Blob
+    const blob = await put(pathname, file, {
+      access: 'public',
+      addRandomSuffix: false,
+    });
 
     return NextResponse.json({ 
       success: true, 
-      publicUrl,
-      key: `${user.id}/${filename}`
+      publicUrl: blob.url,
+      key: pathname
     });
   } catch (e: any) {
     if (e instanceof Response) return e;
+    console.error('Upload error:', e);
     return NextResponse.json(
       { error: e?.message || 'Upload failed' },
       { status: 500 }

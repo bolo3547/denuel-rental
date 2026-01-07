@@ -46,3 +46,12 @@ coverage/
 # Misc
 *.log
 *.tsbuildinfo
+
+# Python virtual environment
+.venv/
+venv/
+__pycache__/
+
+# Build logs
+build-log.txt
+node_modules

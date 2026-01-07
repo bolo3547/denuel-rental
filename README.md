@@ -1,8 +1,40 @@
 # DENUEL App Rental
 
-Zambia-first rental marketplace inspired by Zillow — built with Next.js (App Router), Prisma, PostgreSQL, Tailwind CSS and Mapbox.
+Zambia-first rental marketplace inspired by Zillow — built with Next.js (App Router), Prisma, MySQL (TiDB Cloud), Tailwind CSS and Mapbox.
 
-## Getting started (local)
+## 🚀 Deploying to Vercel
+
+### Required Environment Variables
+
+Add these in your Vercel project settings (Settings → Environment Variables):
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `DATABASE_URL` | MySQL/TiDB connection string | ✅ Yes |
+| `JWT_SECRET` | Secret for JWT authentication (min 32 chars) | ✅ Yes |
+| `BLOB_READ_WRITE_TOKEN` | Vercel Blob storage token for image uploads | ✅ Yes |
+| `NEXT_PUBLIC_MAPBOX_TOKEN` | Mapbox API key for maps | ✅ Yes |
+| `STRIPE_SECRET_KEY` | Stripe secret key for payments | Optional |
+| `STRIPE_PUBLISHABLE_KEY` | Stripe public key | Optional |
+| `SMTP_HOST` | Email server host | Optional |
+| `SMTP_USER` | Email username | Optional |
+| `SMTP_PASS` | Email password | Optional |
+
+### Setting Up Vercel Blob Storage
+
+1. Go to your Vercel dashboard
+2. Select your project → Storage tab
+3. Click "Create Database" → Select "Blob"
+4. The `BLOB_READ_WRITE_TOKEN` will be automatically added to your environment
+
+### Database Setup (TiDB Cloud)
+
+1. Create a free TiDB Cloud account at https://tidbcloud.com
+2. Create a new cluster (Serverless tier is free)
+3. Get your connection string and add it as `DATABASE_URL`
+4. Run migrations: The build process will automatically generate the Prisma client
+
+## Getting started (local development)
 
 1. Copy `.env.example` → `.env` and fill values (S3, REDIS_URL, SMTP if using saved-search emails).
 2. Start Postgres and local dev stack:

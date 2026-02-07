@@ -77,14 +77,23 @@ export function verifyWebhookSignature(
 
 /**
  * Generate crypto-safe access code for smart locks
+ * Uses rejection sampling to avoid modulo bias
  */
 export function generateAccessCode(length: number = 6): string {
   const digits = '0123456789';
   let code = '';
   
-  const bytes = crypto.randomBytes(length);
-  for (let i = 0; i < length; i++) {
-    code += digits[bytes[i] % digits.length];
+  // Use rejection sampling to avoid modulo bias
+  const maxValid = 256 - (256 % digits.length);
+  
+  while (code.length < length) {
+    const bytes = crypto.randomBytes(1);
+    const byte = bytes[0];
+    
+    // Reject bytes that would cause bias
+    if (byte < maxValid) {
+      code += digits[byte % digits.length];
+    }
   }
   
   return code;

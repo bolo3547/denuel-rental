@@ -30,6 +30,9 @@ export interface AnalyticsEvent {
 const viewCache = new Map<string, number>();
 const DEDUP_WINDOW = 60 * 60 * 1000; // 1 hour in milliseconds
 
+// Store interval ID for cleanup
+let cleanupInterval: NodeJS.Timeout | null = null;
+
 /**
  * Clean up expired cache entries periodically
  */
@@ -42,8 +45,34 @@ function cleanupCache() {
   }
 }
 
-// Run cleanup every 5 minutes
-setInterval(cleanupCache, 5 * 60 * 1000);
+/**
+ * Start cleanup interval (only if not already running)
+ */
+function startCleanup() {
+  if (!cleanupInterval && typeof setInterval !== 'undefined') {
+    cleanupInterval = setInterval(cleanupCache, 5 * 60 * 1000);
+    // Unref in Node.js to allow process to exit
+    if (cleanupInterval.unref) {
+      cleanupInterval.unref();
+    }
+  }
+}
+
+/**
+ * Stop cleanup interval and clear cache (for testing/cleanup)
+ */
+export function stopAnalyticsCleanup() {
+  if (cleanupInterval) {
+    clearInterval(cleanupInterval);
+    cleanupInterval = null;
+  }
+  viewCache.clear();
+}
+
+// Start cleanup on module load (only in Node.js environment)
+if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'test') {
+  startCleanup();
+}
 
 /**
  * Track a generic analytics event

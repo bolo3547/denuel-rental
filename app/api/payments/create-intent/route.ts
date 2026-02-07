@@ -1,16 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Stripe from 'stripe';
+
+// Force dynamic rendering to prevent build-time evaluation
+export const dynamic = 'force-dynamic';
 
 /**
- * Get or initialize Stripe client
- * Defers initialization until runtime to avoid build errors
+ * Get or initialize Stripe client using dynamic import
+ * Prevents Stripe library from being evaluated during build
  */
-function getStripeClient(): Stripe {
+async function getStripeClient() {
   const apiKey = process.env.STRIPE_SECRET_KEY;
   
   if (!apiKey) {
     throw new Error('STRIPE_SECRET_KEY environment variable is not configured');
   }
+  
+  // Dynamic import to avoid build-time evaluation
+  const Stripe = (await import('stripe')).default;
   
   return new Stripe(apiKey, {
     apiVersion: '2024-06-20' as any,
@@ -27,7 +32,7 @@ export async function POST(req: NextRequest) {
       );
     }
     
-    const stripe = getStripeClient();
+    const stripe = await getStripeClient();
     const { amount, description } = await req.json(); // amount in ZMW, convert to cents
 
     const paymentIntent = await stripe.paymentIntents.create({

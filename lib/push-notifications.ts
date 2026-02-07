@@ -244,7 +244,7 @@ export function getVapidPublicKey(): string | undefined {
  * Verify push subscription format
  */
 export function validatePushSubscription(subscription: any): subscription is PushSubscription {
-  return (
+  return !!(
     subscription &&
     typeof subscription.endpoint === 'string' &&
     subscription.keys &&

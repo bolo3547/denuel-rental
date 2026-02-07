@@ -1,4 +1,4 @@
-// File: C:\Users\DENUEL\Documents\denuel app rental\app\api\admin\settings\route.ts
+// File: /home/runner/work/denuel-rental/denuel-rental/app/api/admin/settings/route.ts
 import * as entry from '../../../../../../app/api/admin/settings/route.js'
 import type { NextRequest } from 'next/server.js'
 

@@ -45,7 +45,7 @@ const IOT_WEBHOOK_SECRET = process.env.IOT_WEBHOOK_SECRET || 'changeme';
  * Validate IoT payload structure
  */
 export function validateIoTPayload(payload: any): payload is IoTPayload {
-  return (
+  return !!(
     payload &&
     typeof payload.deviceId === 'string' &&
     typeof payload.deviceType === 'string' &&

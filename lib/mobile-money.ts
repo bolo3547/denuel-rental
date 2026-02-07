@@ -56,13 +56,26 @@ export interface PaymentStatus {
  */
 export function detectProvider(phone: string): MobileMoneyProvider | null {
   const cleaned = phone.replace(/\D/g, '');
-  const lastDigits = cleaned.slice(-9);
   
-  const prefix = lastDigits.substring(0, 3);
+  // Get the last 9 digits (Zambian mobile numbers without country code)
+  let number = cleaned;
   
-  if (prefix === '097' || prefix === '077') {
+  // Remove country code if present
+  if (number.startsWith('260') && number.length === 12) {
+    number = number.substring(3);
+  }
+  
+  // Remove leading 0 if present (we want the network prefix)
+  if (number.startsWith('0') && number.length === 10) {
+    number = number.substring(1);
+  }
+  
+  // Now check the first 2 digits
+  const prefix = number.substring(0, 2);
+  
+  if (prefix === '97' || prefix === '77') {
     return 'AIRTEL';
-  } else if (prefix === '096' || prefix === '076') {
+  } else if (prefix === '96' || prefix === '76') {
     return 'MTN';
   }
   

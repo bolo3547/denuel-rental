@@ -34,9 +34,13 @@ const PUBLIC_ROUTES = [
   '/api/properties/public',
   '/api/health',
   '/api/webhook',
+  '/api/webhooks',
   '/favicon.ico',
+  '/robots.txt',
+  '/sitemap.xml',
   '/icons',
   '/images',
+  '/static',
 ];
 
 // Admin-only routes
@@ -161,11 +165,16 @@ export function middleware(req: NextRequest) {
   // Add security headers
   response = addSecurityHeaders(response);
   
-  // Skip middleware for static files and Next.js internals
+  // Skip middleware for Next.js internals and static assets
+  // This includes _next, public assets, and files with extensions
   if (
-    pathname.startsWith('/_next') ||
-    pathname.includes('/favicon.ico') ||
-    pathname.includes('.') && !pathname.includes('/api')
+    pathname.startsWith('/_next/') ||
+    pathname.startsWith('/static/') ||
+    pathname === '/favicon.ico' ||
+    pathname.startsWith('/icons/') ||
+    pathname.startsWith('/images/') ||
+    // Skip files with extensions (but not API routes)
+    (/\.[^/]+$/.test(pathname) && !pathname.startsWith('/api/'))
   ) {
     return response;
   }
@@ -178,6 +187,7 @@ export function middleware(req: NextRequest) {
       '/api/auth/register',
       '/api/auth/refresh',
       '/api/webhook',
+      '/api/webhooks',
     ].some(route => pathname.startsWith(route));
     
     if (!skipCSRF && !validateCSRF(req)) {
@@ -273,9 +283,10 @@ export const config = {
      * Match all request paths except:
      * - _next/static (static files)
      * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder
+     * - _next/data (data files)
+     * - favicon.ico, robots.txt, sitemap.xml
+     * - Static assets in public folder (images, icons, etc.)
      */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|_next/data|favicon.ico|robots.txt|sitemap.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js)$).*)',
   ],
 };

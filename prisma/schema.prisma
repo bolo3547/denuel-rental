@@ -1044,10 +1044,23 @@ model ServiceDocument {
   isExpired       Boolean         @default(false)
   uploadedAt      DateTime        @default(now())
   
+  // Document Authenticity Verification Fields
+  authenticityScore      Int?     // 0-100 confidence score
+  ocrConfidence         Int?      // 0-100 OCR extraction confidence
+  governmentVerified    Boolean   @default(false) // Verified via government API
+  governmentApiResponse Json?     // Full API response for audit
+  fraudRiskScore        Int?      // 0-100 fraud risk (higher = more suspicious)
+  imageAnalysisResult   Json?     // Full image analysis results
+  qrCodeData            Json?     // Extracted QR code data
+  suspiciousFlags       String[]  // List of red flags detected
+  lastVerificationDate  DateTime? // Last automated verification check
+  
   @@index([providerId])
   @@index([type])
   @@index([isVerified])
   @@index([expiresAt])
+  @@index([governmentVerified])
+  @@index([authenticityScore])
 }
 
 model ServicePortfolio {

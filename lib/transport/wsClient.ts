@@ -7,22 +7,22 @@ class WSClient {
   private queue: any[] = [];
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
 
-  constructor() {
-    this.connect();
-  }
-
   connect() {
     if (this.ws) return;
-    this.ws = new WebSocket(WS_URL as string);
-    this.ws.on('open', () => {
-      // flush queue
-      while (this.queue.length) {
-        const msg = this.queue.shift();
-        this.ws?.send(JSON.stringify(msg));
-      }
-    });
-    this.ws.on('close', () => { this.ws = null; this.scheduleReconnect(); });
-    this.ws.on('error', (err) => { console.warn('WS client error', err); });
+    try {
+      this.ws = new WebSocket(WS_URL as string);
+      this.ws.on('open', () => {
+        // flush queue
+        while (this.queue.length) {
+          const msg = this.queue.shift();
+          this.ws?.send(JSON.stringify(msg));
+        }
+      });
+      this.ws.on('close', () => { this.ws = null; this.scheduleReconnect(); });
+      this.ws.on('error', (err) => { console.warn('WS client error', err); });
+    } catch {
+      this.ws = null;
+    }
   }
 
   scheduleReconnect() {

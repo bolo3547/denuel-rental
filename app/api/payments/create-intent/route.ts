@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-06-20' as any,
-});
+async function getStripeClient() {
+  const Stripe = (await import('stripe')).default;
+  return new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    apiVersion: '2024-06-20' as any,
+  });
+}
 
 export async function POST(req: NextRequest) {
   try {
+    const stripe = await getStripeClient();
     const { amount, description } = await req.json(); // amount in ZMW, convert to cents
 
     const paymentIntent = await stripe.paymentIntents.create({

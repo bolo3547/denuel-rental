@@ -961,22 +961,31 @@ model ServiceProvider {
   nrcNumber       String?         // National Registration Card
   tpinNumber      String?         // Tax Payer ID
   isVerified      Boolean         @default(false)
+  verificationLevel Int           @default(0) // 0=none, 1=basic, 2=standard, 3=premium
   isActive        Boolean         @default(true)
   isAvailable     Boolean         @default(true)
   rejectionReason String?         @db.Text
   ratingAvg       Float           @default(0)
   ratingCount     Int             @default(0)
   completedJobs   Int             @default(0)
+  responseTimeHours Float?        // Average response time in hours
+  responseRate    Float           @default(0) // Percentage of inquiries responded to
   bio             String?         @db.Text
   workingHours    Json?           // { monday: "8:00-17:00", ... }
   serviceAreas    Json?           // Array of areas they serve
   languages       Json?           // Languages spoken
+  skills          Json?           // Array of specific skills/specializations
+  certifications  Json?           // Quick reference array of cert names
+  insuranceProvider String?       // Name of insurance company
+  insuranceExpiry DateTime?       // Insurance expiration date
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
   reviews         ServiceReview[]
   bookings        ServiceBooking[]
   documents       ServiceDocument[]
   portfolio       ServicePortfolio[]
+  workExperience  ServiceWorkExperience[]
+  professionalCerts ServiceCertification[]
 }
 
 model ServiceReview {
@@ -1018,15 +1027,40 @@ model ServiceDocument {
   providerId      String
   type            DocumentType
   name            String
+  description     String?         // Additional context about the document
   fileUrl         String
   fileSize        Int?
   mimeType        String?
+  documentNumber  String?         // License number, certificate ID, etc.
+  issuingAuthority String?        // Who issued this document
+  issueDate       DateTime?       // When document was issued
   isVerified      Boolean         @default(false)
   verifiedAt      DateTime?
   verifiedBy      User?           @relation("DocumentVerifier", fields: [verifiedById], references: [id])
   verifiedById    String?
+  verificationNotes String?       @db.Text
   expiresAt       DateTime?
+  expiryWarningDays Int?          // Days before expiry to send warning
+  isExpired       Boolean         @default(false)
   uploadedAt      DateTime        @default(now())
+  
+  // Document Authenticity Verification Fields
+  authenticityScore      Int?     // 0-100 confidence score
+  ocrConfidence         Int?      // 0-100 OCR extraction confidence
+  governmentVerified    Boolean   @default(false) // Verified via government API
+  governmentApiResponse Json?     // Full API response for audit
+  fraudRiskScore        Int?      // 0-100 fraud risk (higher = more suspicious)
+  imageAnalysisResult   Json?     // Full image analysis results
+  qrCodeData            Json?     // Extracted QR code data
+  suspiciousFlags       String[]  // List of red flags detected
+  lastVerificationDate  DateTime? // Last automated verification check
+  
+  @@index([providerId])
+  @@index([type])
+  @@index([isVerified])
+  @@index([expiresAt])
+  @@index([governmentVerified])
+  @@index([authenticityScore])
 }
 
 model ServicePortfolio {
@@ -1035,10 +1069,69 @@ model ServicePortfolio {
   providerId      String
   title           String
   description     String?         @db.Text
-  imageUrl        String
-  category        String?
-  projectDate     DateTime?
+  imageUrl        String          // Main project image
+  beforeImageUrl  String?         // Before image for renovation/transformation projects
+  additionalImages Json?          // Array of additional image URLs
+  category        String?         // Project category
+  projectDate     DateTime?       // When project was completed
+  duration        String?         // How long it took (e.g., "2 weeks")
+  projectCost     Float?          // Cost of the project
+  clientName      String?         // Client name (with permission)
+  clientTestimonial String?       @db.Text
+  location        String?         // Project location
+  tags            Json?           // Skills/techniques used
+  featured        Boolean         @default(false) // Highlight best work
+  viewCount       Int             @default(0)
+  likeCount       Int             @default(0)
   createdAt       DateTime        @default(now())
+  
+  @@index([providerId])
+  @@index([category])
+  @@index([featured])
+}
+
+// Service Provider Work Experience
+model ServiceWorkExperience {
+  id              String          @id @default(cuid())
+  provider        ServiceProvider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  providerId      String
+  jobTitle        String          // e.g., "Senior Plumber", "Lead Electrician"
+  companyName     String          // Company or self-employed
+  location        String?         // City/area where worked
+  startDate       DateTime        // When started this position
+  endDate         DateTime?       // Null if current position
+  isCurrent       Boolean         @default(false)
+  description     String?         @db.Text // Responsibilities and achievements
+  projectsCompleted Int?          // Number of projects in this role
+  skills          Json?           // Skills used in this role
+  createdAt       DateTime        @default(now())
+  
+  @@index([providerId])
+  @@index([isCurrent])
+}
+
+// Professional Certifications and Licenses
+model ServiceCertification {
+  id              String          @id @default(cuid())
+  provider        ServiceProvider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  providerId      String
+  certificationName String        // Name of certification
+  issuingOrganization String      // Who issued it
+  certificationNumber String?     // Certificate/license number
+  issueDate       DateTime        // When obtained
+  expiryDate      DateTime?       // When it expires (null if lifetime)
+  doesExpire      Boolean         @default(false)
+  credentialUrl   String?         // Link to verify online
+  documentUrl     String?         // Link to certificate document
+  description     String?         @db.Text
+  isVerified      Boolean         @default(false) // Admin verified
+  verifiedAt      DateTime?
+  skills          Json?           // Skills this certification validates
+  createdAt       DateTime        @default(now())
+  
+  @@index([providerId])
+  @@index([expiryDate])
+  @@index([isVerified])
 }
 
 // Service Provider Profile Views

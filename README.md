@@ -72,10 +72,35 @@ Add these in your Vercel project settings (Settings → Environment Variables):
 
 - /app — Next.js App Router pages
 - /components — UI components
-- /lib — utilities (auth, prisma client, map helpers)
+- /lib — utilities (auth, prisma client, map helpers, Firebase integration)
 - /prisma — Prisma schema and seed script
 - /public — static assets
 - /styles — global styles
+
+## 🔥 Firebase Integration (Optional)
+
+Firebase is integrated for real-time features, cloud storage, and push notifications. See documentation:
+
+- **[FIREBASE_SETUP.md](./FIREBASE_SETUP.md)** - 🔐 Secure setup guide with your credentials
+- **[FIREBASE.md](./FIREBASE.md)** - Feature documentation and usage examples
+- **[SECURITY_FIREBASE.md](./SECURITY_FIREBASE.md)** - Security best practices
+
+### Quick Setup:
+
+```bash
+# Run the interactive setup script
+./scripts/setup-firebase.sh
+
+# Or manually create .env.local (see FIREBASE_SETUP.md)
+```
+
+### Firebase Features:
+- 💬 Real-time chat (Firestore)
+- 📁 Cloud storage (property images, documents)
+- 📱 Push notifications (FCM)
+- 🔐 Optional authentication (phone, social)
+
+**Important:** Firebase credentials are **sensitive** and must never be committed to the repository. They are stored in `.env.local` which is git-ignored.
 
 ## Roadmap
 

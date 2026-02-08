@@ -1,4 +1,4 @@
-// File: C:\Users\DENUEL\Documents\denuel app rental\app\page.tsx
+// File: /home/runner/work/denuel-rental/denuel-rental/app/page.tsx
 import * as entry from '../../../app/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

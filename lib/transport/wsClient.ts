@@ -20,7 +20,8 @@ class WSClient {
       });
       this.ws.on('close', () => { this.ws = null; this.scheduleReconnect(); });
       this.ws.on('error', (err) => { console.warn('WS client error', err); });
-    } catch {
+    } catch (err) {
+      console.warn('WS client connect error', err);
       this.ws = null;
     }
   }

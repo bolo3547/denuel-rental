@@ -24,5 +24,11 @@ describe('login password verification', () => {
     const hash = hashPassword(password);
     // Trimmed version should match since there are no leading/trailing spaces
     expect(verifyPassword(password.trim(), hash)).toBe(true);
+
+    // Password with spaces: hash of padded password won't match trimmed input
+    const paddedPassword = '  MyPassword#1234  ';
+    const paddedHash = hashPassword(paddedPassword);
+    expect(verifyPassword(paddedPassword, paddedHash)).toBe(true);
+    expect(verifyPassword(paddedPassword.trim(), paddedHash)).toBe(false);
   });
 });

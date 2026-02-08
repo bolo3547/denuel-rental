@@ -47,6 +47,12 @@ coverage/
 *.log
 *.tsbuildinfo
 
+# Firebase credentials (NEVER commit these!)
+service-account*.json
+firebase-adminsdk*.json
+*-firebase-adminsdk-*.json
+firebase-service-account.json
+
 # Python virtual environment
 .venv/
 venv/
